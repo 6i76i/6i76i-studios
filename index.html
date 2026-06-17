@@ -1,35 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Click Game</title>
+  <title>Walk Game</title>
   <style>
     body {
-      font-family: Arial;
-      text-align: center;
-      margin-top: 100px;
+      margin: 0;
+      overflow: hidden;
+      background: #111;
     }
-    button {
-      font-size: 30px;
-      padding: 20px;
-      cursor: pointer;
+    canvas {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <h1>🔥 6i76i sigma Click Game</h1>
-  <p>Clicks: <span id="score">0</span></p>
+<canvas id="game"></canvas>
 
-  <button onclick="addPoint()">CLICK ME</button>
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-  <script>
-    let score = 0;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-    function addPoint() {
-      score++;
-      document.getElementById("score").innerText = score;
-    }
-  </script>
+// player
+let player = {
+  x: 100,
+  y: 100,
+  size: 30,
+  speed: 5
+};
+
+let keys = {};
+
+// controls
+window.addEventListener("keydown", e => keys[e.key] = true);
+window.addEventListener("keyup", e => keys[e.key] = false);
+
+function update() {
+  if (keys["ArrowUp"] || keys["w"]) player.y -= player.speed;
+  if (keys["ArrowDown"] || keys["s"]) player.y += player.speed;
+  if (keys["ArrowLeft"] || keys["a"]) player.x -= player.speed;
+  if (keys["ArrowRight"] || keys["d"]) player.x += player.speed;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // player
+  ctx.fillStyle = "cyan";
+  ctx.fillRect(player.x, player.y, player.size, player.size);
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
 
 </body>
 </html>
