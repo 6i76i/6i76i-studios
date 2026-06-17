@@ -1,10 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>6i76i Studios</title>
+  <title>Click Game</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 100px;
+    }
+    button {
+      font-size: 30px;
+      padding: 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to 6i76i Studios</h1>
-  <p>This is my first website.</p>
+
+  <h1>🔥 6i76i sigma Click Game</h1>
+  <p>Clicks: <span id="score">0</span></p>
+
+  <button onclick="addPoint()">CLICK ME</button>
+
+  <script>
+    let score = 0;
+
+    function addPoint() {
+      score++;
+      document.getElementById("score").innerText = score;
+    }
+  </script>
+
 </body>
 </html>
