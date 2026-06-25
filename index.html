@@ -1,326 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Mobile Jumper</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #05050a;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-        }
-        #gameContainer {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            max-width: 500px; /* Looks great on mobile, constrained on desktop */
-            max-height: 900px;
-            background: #0a0a14;
-            box-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        #ui {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 25px;
-            color: #fff;
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px #ff007f;
-            pointer-events: none;
-        }
-        #overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 10, 0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            color: #ff007f;
-            font-size: 36px;
-            margin-bottom: 5px;
-            text-shadow: 0 0 20px #ff007f;
-        }
-        p {
-            color: #00f0ff;
-            font-size: 16px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px #00f0ff;
-        }
-        .btn {
-            background: transparent;
-            border: 2px solid #00f0ff;
-            color: #00f0ff;
-            padding: 15px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 50px;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lie Detector Game</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:800px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 0 30px rgba(0,0,0,0.3);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+    font-size:2.5rem;
+}
+
+.subtitle{
+    text-align:center;
+    opacity:.8;
+    margin-bottom:25px;
+}
+
+.question-box{
+    background:rgba(255,255,255,.08);
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+#question{
+    font-size:1.3rem;
+    text-align:center;
+}
+
+textarea{
+    width:100%;
+    height:120px;
+    border:none;
+    border-radius:12px;
+    padding:15px;
+    font-size:16px;
+    resize:none;
+    margin-bottom:15px;
+}
+
+button{
+    width:100%;
+    border:none;
+    padding:15px;
+    border-radius:12px;
+    font-size:18px;
+    cursor:pointer;
+    color:white;
+    background:#22c55e;
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.02);
+}
+
+#scanner{
+    text-align:center;
+    margin-top:20px;
+    display:none;
+}
+
+.bar{
+    width:100%;
+    height:8px;
+    border-radius:20px;
+    background:#334155;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.fill{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    animation:scan 2s linear forwards;
+}
+
+@keyframes scan{
+    from{width:0%;}
+    to{width:100%;}
+}
+
+#result{
+    margin-top:25px;
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.truth{
+    color:#22c55e;
+}
+
+.lie{
+    color:#ef4444;
+}
+
+.stats{
+    display:flex;
+    justify-content:space-between;
+    margin-top:25px;
+    gap:10px;
+}
+
+.stat{
+    flex:1;
+    text-align:center;
+    background:rgba(255,255,255,.08);
+    padding:15px;
+    border-radius:12px;
+}
+
+.history{
+    margin-top:25px;
+}
+
+.history h2{
+    margin-bottom:10px;
+}
+
+ul{
+    list-style:none;
+}
+
+li{
+    background:rgba(255,255,255,.08);
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    opacity:.6;
+    font-size:14px;
+}
+</style>
 </head>
 <body>
 
-<div id="gameContainer">
-    <div id="ui">
-        <div id="score">0</div>
-        <div id="highScore">HI: 0</div>
-    </div>
-    
-    <div id="overlay">
-        <h1 id="title">NEON JUMP</h1>
-        <p id="subtitle">TAP ANYWHERE TO JUMP</p>
-        <button class="btn" id="startBtn">START</button>
+<div class="container">
+
+    <div class="card">
+
+        <h1>🕵️ AI Lie Detector</h1>
+        <p class="subtitle">
+            Entertainment Only • Not a Real Lie Detector
+        </p>
+
+        <div class="question-box">
+            <h2 id="question">Loading...</h2>
+        </div>
+
+        <textarea
+            id="answer"
+            placeholder="Type your answer here..."
+        ></textarea>
+
+        <button onclick="scanAnswer()">
+            🔍 Scan My Answer
+        </button>
+
+        <div id="scanner">
+            <p>Analyzing voice patterns, facial expressions, brain waves...</p>
+            <div class="bar">
+                <div class="fill"></div>
+            </div>
+        </div>
+
+        <div id="result"></div>
+
+        <div class="stats">
+            <div class="stat">
+                <h3 id="truthCount">0</h3>
+                <p>Truths</p>
+            </div>
+
+            <div class="stat">
+                <h3 id="lieCount">0</h3>
+                <p>Lies</p>
+            </div>
+
+            <div class="stat">
+                <h3 id="totalCount">0</h3>
+                <p>Total Scans</p>
+            </div>
+        </div>
+
+        <div class="history">
+            <h2>History</h2>
+            <ul id="history"></ul>
+        </div>
+
+        <div class="footer">
+            Made with HTML, CSS & JavaScript
+        </div>
+
     </div>
 
-    <canvas id="gameCanvas"></canvas>
 </div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const overlay = document.getElementById('overlay');
-    const startBtn = document.getElementById('startBtn');
-    const title = document.getElementById('title');
-    const subtitle = document.getElementById('subtitle');
-    const scoreElement = document.getElementById('score');
-    const highScoreElement = document.getElementById('highScore');
+const questions = [
+    "Have you ever skipped homework?",
+    "Have you ever blamed someone else for your mistake?",
+    "Do you always tell the truth?",
+    "Have you ever stayed up later than you should?",
+    "Have you ever cheated in a game?",
+    "Have you ever broken a promise?",
+    "Do you secretly like pineapple pizza?",
+    "Have you ever laughed at the wrong moment?",
+    "Have you ever pretended to be sick?",
+    "Have you ever taken the last snack without asking?"
+];
 
-    let gameState = 'START'; // START, PLAYING, GAMEOVER
-    let score = 0;
-    let highScore = 0;
-    let animationFrameId;
+let truths = 0;
+let lies = 0;
+let total = 0;
 
-    // Mobile Scaler
-    function resize() {
-        const container = document.getElementById('gameContainer');
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
+function setRandomQuestion() {
+    const random =
+        questions[Math.floor(Math.random() * questions.length)];
 
-    // Game Objects
-    let ball = {
-        x: 0, y: 0, radius: 14,
-        vy: 0, gravity: 0.45, jumpForce: -8.5
-    };
+    document.getElementById("question").textContent = random;
+}
 
-    let platforms = [];
-    let particles = [];
-    const colors = ['#ff007f', '#00f0ff', '#00ff66', '#ffff00'];
+function scanAnswer() {
 
-    function initGame() {
-        score = 0;
-        scoreElement.innerText = score;
-        
-        ball.x = canvas.width * 0.25;
-        ball.y = canvas.height * 0.4;
-        ball.vy = 0;
-        
-        platforms = [];
-        particles = [];
-        
-        // Spawn initial base platform under the player
-        platforms.push({
-            x: 0,
-            y: canvas.height * 0.6,
-            width: canvas.width,
-            height: 20,
-            color: '#00f0ff'
-        });
+    const answer =
+        document.getElementById("answer").value.trim();
 
-        // Spawn a couple of forward platforms
-        for(let i = 0; i < 4; i++) {
-            generatePlatform();
-        }
+    if (!answer) {
+        alert("Please enter an answer.");
+        return;
     }
 
-    function generatePlatform() {
-        let lastPlat = platforms[platforms.length - 1];
-        let minX = lastPlat ? lastPlat.x + lastPlat.width + 60 : canvas.width * 0.5;
-        let maxX = lastPlat ? lastPlat.x + lastPlat.width + 130 : canvas.width * 0.6;
-        
-        let width = Math.random() * 60 + 80; // platform width
-        let height = 15;
-        
-        // Random height variation that is physically reachable
-        let minY = lastPlat ? Math.max(canvas.height * 0.25, lastPlat.y - 100) : canvas.height * 0.5;
-        let maxY = lastPlat ? Math.min(canvas.height * 0.8, lastPlat.y + 100) : canvas.height * 0.7;
-        
-        platforms.push({
-            x: Math.random() * (maxX - minX) + minX,
-            y: Math.random() * (maxY - minY) + minY,
-            width: width,
-            height: height,
-            color: colors[Math.floor(Math.random() * colors.length)]
-        });
-    }
+    const scanner =
+        document.getElementById("scanner");
 
-    function spawnExplosion(x, y, color) {
-        for(let i = 0; i < 12; i++) {
-            particles.push({
-                x: x, y: y,
-                vx: (Math.random() - 0.5) * 6,
-                vy: (Math.random() - 0.5) * 6,
-                radius: Math.random() * 3 + 1,
-                alpha: 1,
-                color: color
-            });
-        }
-    }
+    const result =
+        document.getElementById("result");
 
-    // Controls (Both tap and click friendly)
-    function handleTap(e) {
-        if (gameState === 'PLAYING') {
-            ball.vy = ball.jumpForce;
-            spawnExplosion(ball.x, ball.y, '#ffffff');
-        }
-    }
-    
-    window.addEventListener('touchstart', (e) => {
-        if(e.target !== startBtn) handleTap();
-    });
-    window.addEventListener('mousedown', (e) => {
-        if(e.target !== startBtn) handleTap();
-    });
+    scanner.style.display = "block";
+    result.innerHTML = "";
 
-    startBtn.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        gameState = 'PLAYING';
-        initGame();
-        animate();
-    });
+    setTimeout(() => {
 
-    function gameOver() {
-        gameState = 'GAMEOVER';
-        if (score > highScore) {
-            highScore = score;
-            highScoreElement.innerText = "HI: " + highScore;
-        }
-        title.innerText = "CRASHED";
-        title.style.color = "#ff007f";
-        subtitle.innerText = "Score: " + score;
-        startBtn.innerText = "TRY AGAIN";
-        overlay.style.display = 'flex';
-        cancelAnimationFrame(animationFrameId);
-    }
+        scanner.style.display = "none";
 
-    // Game Loop
-    function animate() {
-        if (gameState !== 'PLAYING') return;
-        animationFrameId = requestAnimationFrame(animate);
+        const truthChance = Math.random();
 
-        ctx.fillStyle = 'rgba(10, 10, 20, 0.4)'; // trails
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        total++;
 
-        // Apply Gravity to Player
-        ball.vy += ball.gravity;
-        ball.y += ball.vy;
+        if (truthChance > 0.5) {
 
-        // Screen boundaries
-        if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
-            gameOver();
-            return;
+            truths++;
+
+            result.className = "truth";
+            result.innerHTML =
+                "✅ TRUTH DETECTED<br><small>Confidence: "
+                + (80 + Math.floor(Math.random()*20))
+                + "%</small>";
+
+        } else {
+
+            lies++;
+
+            result.className = "lie";
+            result.innerHTML =
+                "🚨 LIE DETECTED<br><small>Confidence: "
+                + (80 + Math.floor(Math.random()*20))
+                + "%</small>";
         }
 
-        // Camera Tracking Speed (Game auto-scrolls horizontally)
-        let speed = 3.5 + (score * 0.05); 
-        
-        // Move and draw platforms
-        for (let i = platforms.length - 1; i >= 0; i--) {
-            let p = platforms[i];
-            p.x -= speed;
+        document.getElementById("truthCount").textContent = truths;
+        document.getElementById("lieCount").textContent = lies;
+        document.getElementById("totalCount").textContent = total;
 
-            // Neon glowing box
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = p.color;
-            ctx.fillStyle = p.color;
-            ctx.fillRect(p.x, p.y, p.width, p.height);
-            ctx.shadowBlur = 0; // reset blur
+        const history =
+            document.getElementById("history");
 
-            // Collision Detection (Landing on top of platforms)
-            if (ball.x + ball.radius > p.x && 
-                ball.x - ball.radius < p.x + p.width &&
-                ball.y + ball.radius >= p.y && 
-                ball.y - ball.radius < p.y + p.height &&
-                ball.vy > 0) { // must be falling to land
-                
-                // Snap to top of platform and bounce slightly
-                ball.y = p.y - ball.radius;
-                ball.vy = ball.jumpForce * 0.85; // Auto-bounce up
-                score += 10;
-                scoreElement.innerText = score;
-                spawnExplosion(ball.x, ball.y + ball.radius, p.color);
-            }
+        const item =
+            document.createElement("li");
 
-            // Remove off-screen platforms
-            if (p.x + p.width < 0) {
-                platforms.splice(i, 1);
-                generatePlatform();
-            }
-        }
+        item.textContent =
+            document.getElementById("question").textContent +
+            " → " +
+            result.textContent.replace(/\n/g," ");
 
-        // Draw and update particles
-        for(let i = particles.length - 1; i >= 0; i--) {
-            let pt = particles[i];
-            pt.x += pt.vx;
-            pt.y += pt.vy;
-            pt.alpha -= 0.03;
-            
-            if(pt.alpha <= 0) {
-                particles.splice(i, 1);
-            } else {
-                ctx.save();
-                ctx.globalAlpha = pt.alpha;
-                ctx.fillStyle = pt.color;
-                ctx.beginPath();
-                ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
+        history.prepend(item);
 
-        // Draw Player ball
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#ffffff';
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-    }
+        document.getElementById("answer").value = "";
+
+        setRandomQuestion();
+
+    }, 2500);
+}
+
+setRandomQuestion();
 </script>
+
 </body>
 </html>
