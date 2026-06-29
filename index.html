@@ -1,337 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lie Detector Game</title>
-
+<title>Mini ChatBot</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
+body {
+    font-family: Arial, sans-serif;
+    background: #202123;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
 }
-
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#0f172a,#1e293b);
-    color:white;
-    padding:20px;
+#chat {
+    width: 600px;
 }
-
-.container{
-    width:100%;
-    max-width:800px;
+#messages {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #343541;
 }
-
-.card{
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(12px);
-    border-radius:20px;
-    padding:30px;
-    box-shadow:0 0 30px rgba(0,0,0,0.3);
+input {
+    width: 80%;
+    padding: 10px;
 }
-
-h1{
-    text-align:center;
-    margin-bottom:20px;
-    font-size:2.5rem;
+button {
+    padding: 10px;
 }
-
-.subtitle{
-    text-align:center;
-    opacity:.8;
-    margin-bottom:25px;
+.user {
+    color: #4CAF50;
 }
-
-.question-box{
-    background:rgba(255,255,255,.08);
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-}
-
-#question{
-    font-size:1.3rem;
-    text-align:center;
-}
-
-textarea{
-    width:100%;
-    height:120px;
-    border:none;
-    border-radius:12px;
-    padding:15px;
-    font-size:16px;
-    resize:none;
-    margin-bottom:15px;
-}
-
-button{
-    width:100%;
-    border:none;
-    padding:15px;
-    border-radius:12px;
-    font-size:18px;
-    cursor:pointer;
-    color:white;
-    background:#22c55e;
-    transition:.3s;
-}
-
-button:hover{
-    transform:scale(1.02);
-}
-
-#scanner{
-    text-align:center;
-    margin-top:20px;
-    display:none;
-}
-
-.bar{
-    width:100%;
-    height:8px;
-    border-radius:20px;
-    background:#334155;
-    overflow:hidden;
-    margin-top:10px;
-}
-
-.fill{
-    height:100%;
-    width:0%;
-    background:#22c55e;
-    animation:scan 2s linear forwards;
-}
-
-@keyframes scan{
-    from{width:0%;}
-    to{width:100%;}
-}
-
-#result{
-    margin-top:25px;
-    text-align:center;
-    font-size:32px;
-    font-weight:bold;
-}
-
-.truth{
-    color:#22c55e;
-}
-
-.lie{
-    color:#ef4444;
-}
-
-.stats{
-    display:flex;
-    justify-content:space-between;
-    margin-top:25px;
-    gap:10px;
-}
-
-.stat{
-    flex:1;
-    text-align:center;
-    background:rgba(255,255,255,.08);
-    padding:15px;
-    border-radius:12px;
-}
-
-.history{
-    margin-top:25px;
-}
-
-.history h2{
-    margin-bottom:10px;
-}
-
-ul{
-    list-style:none;
-}
-
-li{
-    background:rgba(255,255,255,.08);
-    padding:12px;
-    border-radius:10px;
-    margin-bottom:10px;
-}
-
-.footer{
-    text-align:center;
-    margin-top:20px;
-    opacity:.6;
-    font-size:14px;
+.bot {
+    color: #00BFFF;
 }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div id="chat">
+<h2>Mini ChatBot</h2>
 
-    <div class="card">
+<div id="messages"></div>
 
-        <h1>🕵️ AI Lie Detector</h1>
-        <p class="subtitle">
-            Entertainment Only • Not a Real Lie Detector
-        </p>
-
-        <div class="question-box">
-            <h2 id="question">Loading...</h2>
-        </div>
-
-        <textarea
-            id="answer"
-            placeholder="Type your answer here..."
-        ></textarea>
-
-        <button onclick="scanAnswer()">
-            🔍 Scan My Answer
-        </button>
-
-        <div id="scanner">
-            <p>Analyzing voice patterns, facial expressions, brain waves...</p>
-            <div class="bar">
-                <div class="fill"></div>
-            </div>
-        </div>
-
-        <div id="result"></div>
-
-        <div class="stats">
-            <div class="stat">
-                <h3 id="truthCount">0</h3>
-                <p>Truths</p>
-            </div>
-
-            <div class="stat">
-                <h3 id="lieCount">0</h3>
-                <p>Lies</p>
-            </div>
-
-            <div class="stat">
-                <h3 id="totalCount">0</h3>
-                <p>Total Scans</p>
-            </div>
-        </div>
-
-        <div class="history">
-            <h2>History</h2>
-            <ul id="history"></ul>
-        </div>
-
-        <div class="footer">
-            Made with HTML, CSS & JavaScript
-        </div>
-
-    </div>
+<input id="input" placeholder="Type a message...">
+<button onclick="send()">Send</button>
 
 </div>
 
 <script>
-const questions = [
-    "Have you ever skipped homework?",
-    "Have you ever blamed someone else for your mistake?",
-    "Do you always tell the truth?",
-    "Have you ever stayed up later than you should?",
-    "Have you ever cheated in a game?",
-    "Have you ever broken a promise?",
-    "Do you secretly like pineapple pizza?",
-    "Have you ever laughed at the wrong moment?",
-    "Have you ever pretended to be sick?",
-    "Have you ever taken the last snack without asking?"
-];
+const messages = document.getElementById("messages");
 
-let truths = 0;
-let lies = 0;
-let total = 0;
-
-function setRandomQuestion() {
-    const random =
-        questions[Math.floor(Math.random() * questions.length)];
-
-    document.getElementById("question").textContent = random;
+function addMessage(sender, text, cls){
+    messages.innerHTML += `<p class="${cls}"><b>${sender}:</b> ${text}</p>`;
+    messages.scrollTop = messages.scrollHeight;
 }
 
-function scanAnswer() {
+function botReply(msg){
 
-    const answer =
-        document.getElementById("answer").value.trim();
+    msg = msg.toLowerCase();
 
-    if (!answer) {
-        alert("Please enter an answer.");
-        return;
-    }
+    if(msg.includes("hello") || msg.includes("hi"))
+        return "Hello!";
 
-    const scanner =
-        document.getElementById("scanner");
+    if(msg.includes("how are you"))
+        return "I'm just code, but I'm functioning perfectly.";
 
-    const result =
-        document.getElementById("result");
+    if(msg.includes("your name"))
+        return "I'm MiniBot.";
 
-    scanner.style.display = "block";
-    result.innerHTML = "";
+    if(msg.includes("time"))
+        return new Date().toLocaleTimeString();
 
-    setTimeout(() => {
+    if(msg.includes("joke"))
+        return "Why do programmers prefer dark mode? Because light attracts bugs.";
 
-        scanner.style.display = "none";
-
-        const truthChance = Math.random();
-
-        total++;
-
-        if (truthChance > 0.5) {
-
-            truths++;
-
-            result.className = "truth";
-            result.innerHTML =
-                "✅ TRUTH DETECTED<br><small>Confidence: "
-                + (80 + Math.floor(Math.random()*20))
-                + "%</small>";
-
-        } else {
-
-            lies++;
-
-            result.className = "lie";
-            result.innerHTML =
-                "🚨 LIE DETECTED<br><small>Confidence: "
-                + (80 + Math.floor(Math.random()*20))
-                + "%</small>";
-        }
-
-        document.getElementById("truthCount").textContent = truths;
-        document.getElementById("lieCount").textContent = lies;
-        document.getElementById("totalCount").textContent = total;
-
-        const history =
-            document.getElementById("history");
-
-        const item =
-            document.createElement("li");
-
-        item.textContent =
-            document.getElementById("question").textContent +
-            " → " +
-            result.textContent.replace(/\n/g," ");
-
-        history.prepend(item);
-
-        document.getElementById("answer").value = "";
-
-        setRandomQuestion();
-
-    }, 2500);
+    return "I don't know how to answer that yet.";
 }
 
-setRandomQuestion();
+function send(){
+    const input = document.getElementById("input");
+    const text = input.value.trim();
+
+    if(text === "") return;
+
+    addMessage("You", text, "user");
+
+    const reply = botReply(text);
+
+    setTimeout(()=>{
+        addMessage("Bot", reply, "bot");
+    },500);
+
+    input.value="";
+}
+
+document.getElementById("input").addEventListener("keypress", function(e){
+    if(e.key==="Enter") send();
+});
 </script>
 
 </body>
